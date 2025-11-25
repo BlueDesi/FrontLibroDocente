@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Profesores</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Gestión de Profesores</h1>
+
+<!-- Formulario para agregar/editar profesor -->
+<h2>Agregar / Editar Profesor</h2>
+<form id="profesorForm">
+    <input type="hidden" id="profesorId">
+    
+    <label>Nombre:</label><br>
+    <input type="text" id="nombre" required><br>
+    
+    <label>Apellido:</label><br>
+    <input type="text" id="apellido" required><br>
+    
+    <label>DNI:</label><br>
+    <input type="text" id="dni" required><br>
+    
+    <label>Email:</label><br>
+    <input type="email" id="email" required><br>
+    
+    <label>Activo:</label>
+    <input type="checkbox" id="activo" checked><br><br>
+    
+    <button type="submit">Guardar</button>
+</form>
+
+<!-- Buscar profesor por apellido -->
+<h2>Buscar Profesor por Apellido</h2>
+<input type="text" id="apellidoBuscar" placeholder="Apellido">
+<button onclick="buscarProfesor()">Buscar</button>
+
+<!-- Tabla de profesores -->
+<h2>Lista de Profesores</h2>
+<table border="1" cellspacing="0" cellpadding="5">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>DNI</th>
+            <th>Email</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="profesoresTable"></tbody>
+</table>
+
+<script src="profesores.js"></script>
+</body>
+</html>

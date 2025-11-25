@@ -1,0 +1,157 @@
+/* style.css - Estilo Facebook Light */
+
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #e9ebee;
+    padding: 20px;
+    color: #1c1e21;
+}
+
+/* Encabezados */
+h1 {
+    color: #1877f2;
+    margin-bottom: 15px;
+}
+
+h2 {
+    color: #1c1e21;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Formulario */
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+form input[type="text"],
+form input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccd0d5;
+    border-radius: 6px;
+}
+
+form input[type="checkbox"] {
+    margin-left: 0;
+}
+
+form button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #1877f2;
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #165ec9;
+}
+
+/* Buscador */
+#apellidoBuscar {
+    padding: 8px;
+    width: 200px;
+    margin-right: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccd0d5;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f5f6f7;
+    color: #1c1e21;
+}
+
+tr:hover {
+    background-color: #f0f2f5;
+}
+
+/* Botones de acciones */
+table button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+}
+
+table button:first-child {
+    background-color: #42b72a; /* Editar */
+}
+
+table button:last-child {
+    background-color: #e41e2b; /* Eliminar */
+}
+
+table button:hover {
+    opacity: 0.85;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    th {
+        display: none;
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: bold;
+    }
+
+    table button {
+        margin-top: 5px;
+    }
+}
