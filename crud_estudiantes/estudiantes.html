@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Estudiantes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Gestión de Estudiantes</h1>
+
+<!-- Formulario para agregar/editar estudiante -->
+<h2>Agregar / Editar Estudiante</h2>
+<form id="estudianteForm">
+    <input type="hidden" id="estudianteId">
+    <label>Nombre:</label><br>
+    <input type="text" id="nombre" required><br>
+    <label>Apellido:</label><br>
+    <input type="text" id="apellido" required><br>
+    <label>Email:</label><br>
+    <input type="email" id="email" required><br>
+    <label>Activo:</label>
+    <input type="checkbox" id="activo" checked><br>
+    <button type="submit">Guardar</button>
+</form>
+
+<!-- Buscar estudiante por apellido -->
+<h2>Buscar Estudiante por Apellido</h2>
+<input type="text" id="apellidoBuscar" placeholder="Apellido">
+<button onclick="buscarEstudiante()">Buscar</button>
+
+<!-- Tabla de estudiantes -->
+<h2>Lista de Estudiantes</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="estudiantesTable"></tbody>
+</table>
+
+<script src="estudiantes.js"></script>
+</body>
+</html>
