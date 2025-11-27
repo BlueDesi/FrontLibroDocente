@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción Estudiante a Curso</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+    <h1>Inscribir Estudiante a Curso</h1>
+
+    <section class="form-section">
+        <h2>Nueva inscripción / Editar</h2>
+
+        <form id="inscripcionForm">
+            <input type="hidden" id="editarId">
+
+            <label>Estudiante:</label>
+            <select id="estudianteSelect" required></select>
+
+            <label>Curso:</label>
+            <select id="cursoSelect" required></select>
+
+            <label>Fecha inscripción:</label>
+            <input type="date" id="fecha" required>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </section>
+
+    <section class="list-section">
+        <h2>Inscripciones realizadas</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Estudiante</th>
+                    <th>Curso</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaEC"></tbody>
+        </table>
+    </section>
+
+    <script src="estudianteCurso.js"></script>
+</body>
+</html>

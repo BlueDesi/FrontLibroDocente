@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cursos - Front Test</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <h1>Gestión de Cursos</h1>
+
+    <section>
+        <h2>Listado de Cursos</h2>
+        <button onclick="getAll()">Cargar Cursos</button>
+        <div id="listaCursos"></div>
+    </section>
+
+    <section>
+        <h2>Buscar Curso por ID</h2>
+        <input id="buscarId" type="number" placeholder="ID">
+        <button onclick="getById()">Buscar</button>
+        <div id="resultadoCurso"></div>
+    </section>
+
+    <section>
+        <h2>Crear Curso</h2>
+
+        <input id="nombreCrear" placeholder="Nombre del curso">
+        <input id="turnoCrear" placeholder="Turno (Mañana/Tarde)">
+        <input id="anioCrear" type="number" placeholder="Año">
+        <input id="seccionCrear" placeholder="Sección">
+        <input id="profesorCrear" type="number" placeholder="Profesor ID">
+
+        <button onclick="crearCurso()">Crear</button>
+        <pre id="resultadoCrear"></pre>
+    </section>
+
+    <section>
+        <h2>Editar Curso</h2>
+        <input id="editarId" type="number" placeholder="ID del curso">
+        <input id="tituloEditar" placeholder="Nombre">
+        <input id="turnoEditar" placeholder="Turno">
+        <input id="anioEditar" type="number" placeholder="Año">
+        <input id="seccionEditar" placeholder="Sección">
+        <input id="profesorEditar" type="number" placeholder="Profesor ID">
+
+        <button onclick="editarCurso()">Editar</button>
+        <pre id="resultadoEditar"></pre>
+    </section>
+
+    <section>
+        <h2>Eliminar Curso</h2>
+        <input id="eliminarId" type="number" placeholder="ID">
+        <button onclick="eliminarCurso()">Eliminar</button>
+        <div id="resultadoEliminar"></div>
+    </section>
+
+    <script src="cursos.js"></script>
+</body>
+</html>

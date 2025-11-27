@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Eventos</title>
+    <link rel="stylesheet" href="../style.css"> <!-- Ruta al CSS general -->
+</head>
+<body>
+
+    <h1>Gestión de Eventos</h1>
+
+    <section class="form-section">
+        <h2>Crear / Editar Evento</h2>
+        <form id="eventoForm">
+            <input type="hidden" id="eventoId">
+
+            <label>Descripción:</label>
+            <input type="text" id="descripcion" required>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </section>
+
+    <section class="list-section">
+        <h2>Listado de Eventos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="eventosTableBody"></tbody>
+        </table>
+    </section>
+
+    <script src="/crud_eventos/eventos.js"></script>
+</body>
+</html>
