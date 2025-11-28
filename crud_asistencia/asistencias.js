@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cursoSelect = document.getElementById("cursoSelect");
     const planillaBody = document.querySelector("#planilla tbody");
 
-    // Función para cargar profesores
+    // Cargar profesores
     async function cargarProfesores() {
         try {
             const res = await fetch("https://localhost:7290/api/Profesores");
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Función para cargar cursos de un profesor
+    // Cargar cursos de un profesor
     async function cargarCursos(profesorId) {
         cursoSelect.innerHTML = '<option value="">--Seleccione--</option>';
         planillaBody.innerHTML = "";
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Función para cargar estudiantes de un curso
+    // Cargar estudiantes de un curso
     async function cargarEstudiantes(cursoId) {
         planillaBody.innerHTML = "";
         if (!cursoId) return;
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </td>
                 `;
 
-                // Lógica para deshabilitar checkbox opuesto
+                // Deshabilitar checkbox opuesto
                 const chkP = tr.querySelector(".presente");
                 const chkA = tr.querySelector(".ausente");
 
