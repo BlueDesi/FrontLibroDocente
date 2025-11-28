@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Planilla de Asistencia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        select {
+            margin: 10px 0;
+            padding: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #eee;
+        }
+        td.nombre-apellido {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Planilla de Asistencia</h1>
+
+    <label for="profesorSelect">Seleccione un Profesor:</label>
+    <select id="profesorSelect">
+        <option value="">--Seleccione--</option>
+    </select>
+
+    <br>
+
+    <label for="cursoSelect">Seleccione un Curso:</label>
+    <select id="cursoSelect" disabled>
+        <option value="">--Seleccione--</option>
+    </select>
+
+    <table id="planilla">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Asistencia</th>
+            
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script src="asistencias.js"></script>
+</body>
+</html>
