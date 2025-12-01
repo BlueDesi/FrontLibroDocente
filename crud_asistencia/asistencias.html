@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Planilla de Asistencia</title>
+    <title>Planilla de Asistencia por Cuatrimestre</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,9 +25,6 @@
         th {
             background-color: #eee;
         }
-        td.nombre-apellido {
-            text-align: left;
-        }
     </style>
 </head>
 <body>
@@ -45,16 +42,33 @@
         <option value="">--Seleccione--</option>
     </select>
 
+    <br>
+
+    <label for="cuatrimestreSelect">Seleccione Cuatrimestre:</label>
+    <select id="cuatrimestreSelect">
+        <option value="0">1er Cuatrimestre</option>
+        <option value="1">2do Cuatrimestre</option>
+    </select>
+
+    <br>
+
+    <label for="diaClaseSelect">Día de Clase:</label>
+    <select id="diaClaseSelect">
+        <option value="1">Lunes</option>
+        <option value="2">Martes</option>
+        <option value="3">Miércoles</option>
+        <option value="4">Jueves</option>
+        <option value="5">Viernes</option>
+    </select>
+
     <table id="planilla">
         <thead>
-            <tr>
+            <tr id="headerRow">
                 <th>Nombre</th>
                 <th>Apellido</th>
-                <th>Asistencia</th>
-            
             </tr>
         </thead>
-        <tbody>
+        <tbody id="planillaBody">
         </tbody>
     </table>
 

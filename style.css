@@ -1,157 +1,149 @@
-/* style.css - Estilo Facebook Light */
+/* ==========================================================
+   HOME - Estilo Futurista Neón Accesible (Totalmente Nuevo)
+   ========================================================== */
 
-/* Reset básico */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;700&display=swap');
+
+/* RESET */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
 }
 
 body {
-    background-color: #e9ebee;
+    font-family: 'Inter', sans-serif;
+    background: radial-gradient(circle at top, #0a0d1f, #05060d 70%);
+    color: #eaeaea;
     padding: 20px;
-    color: #1c1e21;
+    min-height: 100vh;
 }
 
-/* Encabezados */
-h1 {
-    color: #1877f2;
-    margin-bottom: 15px;
+/* CONTENEDOR */
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: auto;
+    padding-top: 25px;
 }
 
-h2 {
-    color: #1c1e21;
-    margin-top: 20px;
+/* TITULO PRINCIPAL */
+.title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3.2rem;
+    text-align: center;
+    color: #39FF14; /* Verde neón */
+    letter-spacing: 4px;
     margin-bottom: 10px;
+
+    text-shadow: 
+        0 0 10px #39FF14,
+        0 0 20px #39FF14,
+        0 0 30px rgba(57,255,20,0.5);
+
+    animation: holograma 2.3s infinite ease-in-out;
 }
 
-/* Formulario */
-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 500px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* EFECTO HOLOGRAFICO */
+@keyframes holograma {
+    0%, 100% { opacity: 1; }
+    47% { opacity: 1; }
+    50% { opacity: 0.7; }
+    53% { opacity: 1; }
 }
 
-form label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-form input[type="text"],
-form input[type="email"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccd0d5;
-    border-radius: 6px;
-}
-
-form input[type="checkbox"] {
-    margin-left: 0;
-}
-
-form button {
-    margin-top: 15px;
-    padding: 10px 15px;
-    background-color: #1877f2;
-    border: none;
-    color: #fff;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-form button:hover {
-    background-color: #165ec9;
-}
-
-/* Buscador */
-#apellidoBuscar {
-    padding: 8px;
-    width: 200px;
-    margin-right: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccd0d5;
-}
-
-button {
-    cursor: pointer;
-}
-
-/* Tabla */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #f5f6f7;
-    color: #1c1e21;
-}
-
-tr:hover {
-    background-color: #f0f2f5;
-}
-
-/* Botones de acciones */
-table button {
-    margin-right: 5px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 6px;
-    color: #fff;
-}
-
-table button:first-child {
-    background-color: #42b72a; /* Editar */
-}
-
-table button:last-child {
-    background-color: #e41e2b; /* Eliminar */
-}
-
-table button:hover {
+/* Subtítulo */
+.subtitle {
+    text-align: center;
+    font-size: 1.4rem;
+    color: #f8ff2c; /* Amarillo neon */
     opacity: 0.85;
+    margin-bottom: 40px;
+    text-shadow: 0 0 10px #f8ff2c;
 }
 
-/* Responsivo */
-@media (max-width: 768px) {
-    table, thead, tbody, th, td, tr {
-        display: block;
+/* GRID PRINCIPAL */
+.grid {
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* TARJETAS */
+.card {
+    background: rgba(30, 40, 80, 0.35);
+    border: 2px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
+    padding: 30px;
+    text-decoration: none;
+    color: #ffffff;
+    backdrop-filter: blur(8px);
+    transition: 0.25s ease;
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.15);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* TITULO DE CADA OPCIÓN */
+.card h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.7rem;
+    color: #39FF14;
+    margin-bottom: 12px;
+    text-shadow: 0 0 8px #39FF14;
+}
+
+/* TEXTO */
+.card p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    color: #d4ffd4;
+    line-height: 1.5;
+}
+
+/* EFECTO HOVER */
+.card:hover {
+    transform: translateY(-10px) scale(1.03);
+    border-color: #39FF14;
+    box-shadow: 0 0 25px #39FF14;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    font-size: 1rem;
+    color: #00eaff;
+    margin-top: 50px;
+    opacity: 0.5;
+    letter-spacing: 2px;
+}
+
+/* ============================
+      RESPONSIVE
+   ============================ */
+
+/* Pantallas muy pequeñas */
+@media (max-width: 500px) {
+    .title {
+        font-size: 2.2rem;
+        letter-spacing: 2px;
     }
 
-    th {
-        display: none;
+    .subtitle {
+        font-size: 1.1rem;
     }
 
-    td {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
+    .card {
+        padding: 20px;
     }
 
-    td::before {
-        content: attr(data-label);
-        font-weight: bold;
+    .card h2 {
+        font-size: 1.4rem;
     }
 
-    table button {
-        margin-top: 5px;
+    .grid {
+        gap: 20px;
     }
 }

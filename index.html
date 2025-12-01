@@ -1,11 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>FrontLibro - Home</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hola a todos !</h1>
+
+    <div class="container">
+
+        <header>
+            <h1 class="title">FrontLibro<span>_Beta</span></h1>
+            <p class="subtitle">Gestión académica futurista</p>
+        </header>
+
+        <nav class="grid">
+            <a href="crud_profesores/profesores.html" class="card">
+                <h2>Profesores</h2>
+                <p>Administrar datos de profesores</p>
+            </a>
+
+            <a href="crud_estudiantes/estudiantes.html" class="card">
+                <h2>Estudiantes</h2>
+                <p>CRUD completo de alumnos</p>
+            </a>
+
+            <a href="crud_cursos/cursos.html" class="card">
+                <h2>Cursos</h2>
+                <p>Crear, editar y organizar cursos</p>
+            </a>
+
+            <a href="crud_eventos/eventos.html" class="card">
+                <h2>Eventos</h2>
+                <p>Administración de eventos y actividades</p>
+            </a>
+
+            <a href="crud_estudiantecurso/estudiantecurso.html" class="card">
+                <h2>Estudiantes por Curso</h2>
+                <p>Asignar alumnos a cursos</p>
+            </a>
+                <a href="crud_asistencia/asistencias.html" class="card">
+                <h2>Asistencia</h2>
+                <p>Tomar asistencia</p>
+            </a>
+        </nav>
+
+        <footer>
+            <p>© 2025 FrontLibro – Administración académica</p>
+        </footer>
+
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
