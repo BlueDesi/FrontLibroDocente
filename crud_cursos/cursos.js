@@ -1,13 +1,41 @@
 const baseUrl = "http://localhost:5218/api/cursos";
-const profesoresUrl = "http://localhost:5218/api/profesores";
+const baseUrlProfesores = "http://localhost:5218/api/profesores";
 
 // ================================
-//   OBTENER PROFESOR POR ID
+//   FUNCION AUXILIAR DIA
 // ================================
-async function obtenerProfesor(profesorId) {
-    const res = await fetch(`${profesoresUrl}/${profesorId}`);
-    if (!res.ok) return null;
-    return await res.json();
+function diaTexto(numero) {
+    const dias = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+    return dias[numero] || "Desconocido";
+}
+
+// ================================
+//   CARGAR LISTA DE PROFESORES PARA SELECTS
+// ================================
+let listaProfesores = [];
+
+async function cargarProfesores() {
+    const res = await fetch(baseUrlProfesores);
+    listaProfesores = await res.json();
+
+    // Llenar selects de crear y editar
+    const crear = document.getElementById("profesorCrear");
+    const editar = document.getElementById("profesorEditar");
+
+    crear.innerHTML = "";
+    editar.innerHTML = "";
+
+    for (const p of listaProfesores) {
+        const optionCrear = document.createElement("option");
+        optionCrear.value = p.id;
+        optionCrear.textContent = `${p.id} - ${p.apellido} ${p.nombre}`;
+        crear.appendChild(optionCrear);
+
+        const optionEditar = document.createElement("option");
+        optionEditar.value = p.id;
+        optionEditar.textContent = `${p.id} - ${p.apellido} ${p.nombre}`;
+        editar.appendChild(optionEditar);
+    }
 }
 
 // ================================
@@ -21,32 +49,25 @@ async function getAll() {
     lista.innerHTML = "";
 
     for (const curso of data) {
-        const profesor = await obtenerProfesor(curso.profesorId);
-
         const div = document.createElement("div");
         div.classList.add("card");
+
+        const profTexto = curso.profesor
+            ? `${curso.profesor.id} - ${curso.profesor.apellido} ${curso.profesor.nombre}`
+            : "No encontrado";
 
         div.innerHTML = `
             <strong>ID Curso: ${curso.id}</strong><br>
             <strong>${curso.nombre}</strong><br><br>
-
             <table class="tabla-curso">
                 <tr><td><b>Turno:</b></td><td>${curso.turno}</td></tr>
                 <tr><td><b>Año:</b></td><td>${curso.anio}</td></tr>
                 <tr><td><b>Sección:</b></td><td>${curso.seccion}</td></tr>
-                
-                <tr>
-                    <td><b>Profesor:</b></td>
-                    <td>
-                        ${curso.profesorId} - 
-                        ${profesor ? profesor.nombre + " " + profesor.apellido : "No encontrado"}
-                    </td>
-                </tr>
-
+                <tr><td><b>Profesor:</b></td><td>${profTexto}</td></tr>
+                <tr><td><b>Día de Clase:</b></td><td>${diaTexto(curso.diaClase)}</td></tr>
                 <tr><td><b>Activo:</b></td><td>${curso.activo ? "Sí" : "No"}</td></tr>
             </table>
         `;
-
         lista.appendChild(div);
     }
 }
@@ -56,31 +77,28 @@ async function getAll() {
 // ================================
 async function getById() {
     const id = document.getElementById("buscarId").value;
-
-    const res = await fetch(`${baseUrl}/${id}`);
     const div = document.getElementById("resultadoCurso");
 
+    const res = await fetch(`${baseUrl}/${id}`);
     if (res.status === 404) {
         div.textContent = "Curso no encontrado";
         return;
     }
 
-    const data = await res.json();
-    const profesor = await obtenerProfesor(data.profesorId);
+    const curso = await res.json();
+    const profTexto = curso.profesor
+        ? `${curso.profesor.id} - ${curso.profesor.apellido} ${curso.profesor.nombre}`
+        : "No encontrado";
 
     div.innerHTML = `
-        <h3>${data.nombre}</h3>
-        <p><b>ID Curso:</b> ${data.id}</p>
-        <p><b>Turno:</b> ${data.turno}</p>
-        <p><b>Año:</b> ${data.anio}</p>
-        <p><b>Sección:</b> ${data.seccion}</p>
-
-        <p><b>Profesor:</b>  
-            ${data.profesorId} - 
-            ${profesor ? profesor.nombre + " " + profesor.apellido : "No encontrado"}
-        </p>
-
-        <p><b>Activo:</b> ${data.activo ? "Sí" : "No"}</p>
+        <h3>${curso.nombre}</h3>
+        <p><b>ID Curso:</b> ${curso.id}</p>
+        <p><b>Turno:</b> ${curso.turno}</p>
+        <p><b>Año:</b> ${curso.anio}</p>
+        <p><b>Sección:</b> ${curso.seccion}</p>
+        <p><b>Profesor:</b> ${profTexto}</p>
+        <p><b>Día de Clase:</b> ${diaTexto(curso.diaClase)}</p>
+        <p><b>Activo:</b> ${curso.activo ? "Sí" : "No"}</p>
     `;
 }
 
@@ -94,6 +112,7 @@ async function crearCurso() {
         anio: parseInt(document.getElementById("anioCrear").value),
         seccion: document.getElementById("seccionCrear").value,
         profesorId: parseInt(document.getElementById("profesorCrear").value),
+        diaClase: parseInt(document.getElementById("diaCrear").value),
         activo: true
     };
 
@@ -105,11 +124,35 @@ async function crearCurso() {
 
     const data = await res.json();
     document.getElementById("resultadoCrear").textContent = JSON.stringify(data, null, 2);
+    getAll();
 }
 
 // ================================
-//   PUT
-// ================================
+//   PUT (Editar)
+/// ================================
+async function cargarCursoEditar() {
+    const id = document.getElementById("editarId").value;
+    if (!id) return;
+
+    const res = await fetch(`${baseUrl}/${id}`);
+    if (res.status === 404) {
+        document.getElementById("resultadoEditar").textContent = "Curso no encontrado";
+        return;
+    }
+
+    const curso = await res.json();
+
+    document.getElementById("tituloEditar").value = curso.nombre;
+    document.getElementById("turnoEditar").value = curso.turno;
+    document.getElementById("anioEditar").value = curso.anio;
+    document.getElementById("seccionEditar").value = curso.seccion;
+    document.getElementById("diaEditar").value = curso.diaClase;
+
+    if (curso.profesor) {
+        document.getElementById("profesorEditar").value = curso.profesor.id;
+    }
+}
+
 async function editarCurso() {
     const id = document.getElementById("editarId").value;
 
@@ -119,6 +162,7 @@ async function editarCurso() {
         anio: parseInt(document.getElementById("anioEditar").value),
         seccion: document.getElementById("seccionEditar").value,
         profesorId: parseInt(document.getElementById("profesorEditar").value),
+        diaClase: parseInt(document.getElementById("diaEditar").value),
         activo: true
     };
 
@@ -137,6 +181,7 @@ async function editarCurso() {
 
     const data = await res.json();
     div.textContent = JSON.stringify(data, null, 2);
+    getAll();
 }
 
 // ================================
@@ -149,4 +194,12 @@ async function eliminarCurso() {
 
     document.getElementById("resultadoEliminar").textContent =
         res.status === 204 ? "Eliminado correctamente" : "Curso no encontrado";
+
+    getAll();
 }
+
+// ================================
+//   INICIALIZACIÓN
+// ================================
+cargarProfesores();
+//getAll();

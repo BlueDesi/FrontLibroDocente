@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Cursos - Front Test</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/crud_cursos/style.css">
 </head>
 <body>
 
     <h1>Gestión de Cursos</h1>
 
+    <!-- Listado de Cursos -->
     <section>
         <h2>Listado de Cursos</h2>
         <button onclick="getAll()">Cargar Cursos</button>
         <div id="listaCursos"></div>
     </section>
 
+    <!-- Buscar Curso por ID -->
     <section>
         <h2>Buscar Curso por ID</h2>
         <input id="buscarId" type="number" placeholder="ID">
@@ -22,32 +24,57 @@
         <div id="resultadoCurso"></div>
     </section>
 
+    <!-- Crear Curso -->
     <section>
         <h2>Crear Curso</h2>
-
         <input id="nombreCrear" placeholder="Nombre del curso">
         <input id="turnoCrear" placeholder="Turno (Mañana/Tarde)">
         <input id="anioCrear" type="number" placeholder="Año">
         <input id="seccionCrear" placeholder="Sección">
-        <input id="profesorCrear" type="number" placeholder="Profesor ID">
+
+        <label for="profesorCrear">Profesor:</label>
+        <select id="profesorCrear"></select>
+
+        <label for="diaCrear">Día de Clase:</label>
+        <select id="diaCrear">
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miércoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+        </select>
 
         <button onclick="crearCurso()">Crear</button>
         <pre id="resultadoCrear"></pre>
     </section>
 
+    <!-- Editar Curso -->
     <section>
         <h2>Editar Curso</h2>
-        <input id="editarId" type="number" placeholder="ID del curso">
+        <input id="editarId" type="number" placeholder="ID del curso" onchange="cargarCursoEditar()">
+
         <input id="tituloEditar" placeholder="Nombre">
         <input id="turnoEditar" placeholder="Turno">
         <input id="anioEditar" type="number" placeholder="Año">
         <input id="seccionEditar" placeholder="Sección">
-        <input id="profesorEditar" type="number" placeholder="Profesor ID">
+
+        <label for="profesorEditar">Profesor:</label>
+        <select id="profesorEditar"></select>
+
+        <label for="diaEditar">Día de Clase:</label>
+        <select id="diaEditar">
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miércoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+        </select>
 
         <button onclick="editarCurso()">Editar</button>
         <pre id="resultadoEditar"></pre>
     </section>
 
+    <!-- Eliminar Curso -->
     <section>
         <h2>Eliminar Curso</h2>
         <input id="eliminarId" type="number" placeholder="ID">
@@ -55,6 +82,6 @@
         <div id="resultadoEliminar"></div>
     </section>
 
-    <script src="cursos.js"></script>
+    <script src="/crud_cursos/cursos.js"></script>
 </body>
 </html>

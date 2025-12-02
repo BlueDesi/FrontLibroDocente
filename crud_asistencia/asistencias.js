@@ -1,16 +1,16 @@
 const profesorSelect = document.getElementById('profesorSelect');
 const cursoSelect = document.getElementById('cursoSelect');
 const cuatrimestreSelect = document.getElementById('cuatrimestreSelect');
-const diaClaseSelect = document.getElementById('diaClaseSelect');
 const headerRow = document.getElementById('headerRow');
 const planillaBody = document.getElementById('planillaBody');
 
 let estudiantes = [];
 let fechas = [];
+let diaClaseCurso = 1; // por defecto Lunes
 
 const cuatrimestres = [
-    { nombre: "1er Cuatrimestre", inicio: new Date(2025, 2, 5), fin: new Date(2025, 6, 20) }, // 5-mar a 20-jul
-    { nombre: "2do Cuatrimestre", inicio: new Date(2025, 7, 2), fin: new Date(2025, 11, 29) }  // 2-ago a 22-dic
+    { nombre: "1er Cuatrimestre", inicio: new Date(2025, 2, 5), fin: new Date(2025, 6, 20) },
+    { nombre: "2do Cuatrimestre", inicio: new Date(2025, 7, 2), fin: new Date(2025, 11, 29) }
 ];
 
 // --- Cargar Profesores ---
@@ -41,6 +41,7 @@ async function cargarCursos(profesorId) {
             const opt = document.createElement('option');
             opt.value = c.id;
             opt.textContent = `${c.nombre} - Año ${c.anio} - Sección ${c.seccion}`;
+            opt.dataset.diaclase = c.diaClase; // día de la semana del curso
             cursoSelect.appendChild(opt);
         });
         cursoSelect.disabled = false;
@@ -68,11 +69,10 @@ async function cargarEstudiantes(cursoId) {
 function calcularFechasCuatrimestre() {
     fechas = [];
     const cuatri = cuatrimestres[parseInt(cuatrimestreSelect.value)];
-    const diaSemana = parseInt(diaClaseSelect.value);
     let current = new Date(cuatri.inicio);
-    
+
     while (current <= cuatri.fin) {
-        if (current.getDay() === diaSemana) fechas.push(new Date(current));
+        if (current.getDay() === diaClaseCurso) fechas.push(new Date(current));
         current.setDate(current.getDate() + 1);
     }
 }
@@ -98,6 +98,7 @@ function renderizarTabla() {
             const pChk = document.createElement('input');
             pChk.type = 'checkbox';
             pChk.style.marginRight = '2px';
+
             const aChk = document.createElement('input');
             aChk.type = 'checkbox';
             aChk.style.marginLeft = '2px';
@@ -105,11 +106,11 @@ function renderizarTabla() {
             const pLabel = document.createElement('span');
             pLabel.textContent = 'P';
             pLabel.style.marginRight = '5px';
+
             const aLabel = document.createElement('span');
             aLabel.textContent = 'A';
             aLabel.style.marginLeft = '5px';
 
-            // Exclusión mutua y colores
             pChk.addEventListener('change', () => {
                 if (pChk.checked) {
                     aChk.checked = false;
@@ -118,6 +119,7 @@ function renderizarTabla() {
                     td.style.backgroundColor = '';
                 }
             });
+
             aChk.addEventListener('change', () => {
                 if (aChk.checked) {
                     pChk.checked = false;
@@ -152,15 +154,14 @@ profesorSelect.addEventListener('change', () => {
 
 cursoSelect.addEventListener('change', () => {
     const cursoId = cursoSelect.value;
-    if (cursoId) cargarEstudiantes(cursoId);
+    if (cursoId) {
+        const opt = cursoSelect.selectedOptions[0];
+        diaClaseCurso = parseInt(opt.dataset.diaclase);
+        cargarEstudiantes(cursoId);
+    }
 });
 
 cuatrimestreSelect.addEventListener('change', () => {
-    calcularFechasCuatrimestre();
-    renderizarTabla();
-});
-
-diaClaseSelect.addEventListener('change', () => {
     calcularFechasCuatrimestre();
     renderizarTabla();
 });
