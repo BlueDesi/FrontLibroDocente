@@ -1,111 +1,57 @@
-/* style.css - Estilo Facebook Light */
-
-/* Reset básico */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Wrapper para scroll horizontal */
+.tabla-wrapper {
+    overflow-x: auto;
+    position: relative; /* necesario para sticky */
 }
 
-body {
-    background-color: #e9ebee;
-    padding: 20px;
-    color: #1c1e21;
-}
-
-/* Encabezados */
-h1 {
-    color: #1877f2;
-    margin-bottom: 15px;
-}
-
-h2 {
-    color: #1c1e21;
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-/* Formulario */
-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 500px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-form label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-form input[type="text"],
-form input[type="email"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccd0d5;
-    border-radius: 6px;
-}
-
-form input[type="checkbox"] {
-    margin-left: 0;
-}
-
-form button {
-    margin-top: 15px;
-    padding: 10px 15px;
-    background-color: #1877f2;
-    border: none;
-    color: #fff;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-form button:hover {
-    background-color: #165ec9;
-}
-
-/* Buscador */
-#apellidoBuscar {
-    padding: 8px;
-    width: 200px;
-    margin-right: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccd0d5;
-}
-
-button {
-    cursor: pointer;
-}
-
-/* Tabla */
+/* Tabla general */
 table {
     width: 100%;
     border-collapse: collapse;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
 }
 
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
+/* Encabezado */
 th {
     background-color: #f5f6f7;
     color: #1c1e21;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-tr:hover {
-    background-color: #f0f2f5;
+/* Columnas Nombre y Apellido fijas */
+th:first-child,
+th:nth-child(2),
+td:first-child,
+td:nth-child(2) {
+    position: sticky;
+    left: 0; 
+    background-color: #fff;
+    z-index: 5;
+    border-right: 1px solid #ccc;
+}
+
+/* Ajustar la segunda columna (Apellido) */
+th:nth-child(2),
+td:nth-child(2) {
+    left: 120px; /* ancho aproximado de la primera columna */
+    z-index: 6;  /* encima de la primera columna */
+}
+
+/* Filas alternadas */
+tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* Bordes y celdas */
+th, td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    min-width: 80px;
 }
 
 /* Botones de acciones */
@@ -117,16 +63,27 @@ table button {
     color: #fff;
 }
 
-table button:first-child {
-    background-color: #42b72a; /* Editar */
+table button:first-child { background-color: #42b72a; }
+table button:last-child { background-color: #e41e2b; }
+table button:hover { opacity: 0.85; }
+
+/* Panel de comentario */
+.comentario-panel {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: 13px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    z-index: 20;
 }
 
-table button:last-child {
-    background-color: #e41e2b; /* Eliminar */
-}
-
-table button:hover {
-    opacity: 0.85;
+/* Icono de comentario */
+.comentario-icono {
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 4px;
 }
 
 /* Responsivo */
@@ -135,9 +92,7 @@ table button:hover {
         display: block;
     }
 
-    th {
-        display: none;
-    }
+    th { display: none; }
 
     td {
         display: flex;
@@ -151,80 +106,5 @@ table button:hover {
         font-weight: bold;
     }
 
-    table button {
-        margin-top: 5px;
-    }
-}
-.comentario-panel {
-    position: absolute;
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 8px;
-    font-size: 13px;
-    border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    z-index: 20;
-}
-
-.comentario-icono {
-    font-size: 12px;
-    cursor: pointer;
-    margin-left: 4px;
-}
-
-/* Wrapper para scroll horizontal si se achica la pantalla */
-.tabla-wrapper {
-    overflow-x: auto;
-}
-
-/* Tabla general */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Bordes de celdas */
-th, td {
-    border: 1px solid #ccc;
-    padding: 6px;
-    min-width: 80px;
-}
-
-/* Encabezado */
-th {
-    background-color: #f0f0f0;
-    position: sticky;
-    top: 0; /* que se quede fijo al hacer scroll vertical */
-    z-index: 10;
-}
-
-/* Filas alternadas para mejor lectura */
-tbody tr:nth-child(even) {
-    background-color: #fafafa;
-}
-
-/* Select de evento columna */
-select.evento-columna {
-    max-width: 120px;
-}
-
-/* Icono de comentario */
-.comentario-icono {
-    cursor: pointer;
-}
-
-/* Panel de comentario */
-.comentario-panel {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    background: #fff;
-    border-radius: 4px;
-    padding: 6px;
-    font-size: 14px;
-}
-
-/* Hover sobre panel para mejorar UX */
-.comentario-panel p {
-    margin: 0 0 4px 0;
+    table button { margin-top: 5px; }
 }

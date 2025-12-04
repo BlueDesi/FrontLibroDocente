@@ -117,7 +117,7 @@ function crearPanelComentario(td, estudiante, fecha) {
         <button id="btnSi">Sí</button>
         <button id="btnNo">No</button>
         <div id="comentarioForm" style="margin-top:8px; display:none;">
-            <textarea id="comentarioTexto" rows="2" style="width:200px;"></textarea>
+            <textarea id="comentarioTexto" rows="2" style="width:200px;">${td.dataset.comentario || ''}</textarea>
             <br>
             <button id="guardarComentario">Guardar</button>
         </div>
@@ -128,22 +128,26 @@ function crearPanelComentario(td, estudiante, fecha) {
     panel.querySelector("#btnNo").onclick = () => { panel.remove(); panelComentarioActual = null; };
     panel.querySelector("#guardarComentario").onclick = () => {
         let texto = panel.querySelector("#comentarioTexto").value.trim();
-        if (texto.length > 0) {
-            td.dataset.comentario = texto;
-            if (!td.querySelector(".comentario-icono")) {
-                let icono = document.createElement("span");
-                icono.className = "comentario-icono";
-                icono.textContent = "📝";
-                icono.style.cursor = 'pointer';
-                icono.style.fontSize='12px';
-                icono.style.marginLeft='4px';
-                icono.title='Ver comentario';
-                icono.addEventListener('click', e=>{
-                    e.stopPropagation();
-                    alert(`Comentario: ${texto}`);
-                });
-                td.appendChild(icono);
-            }
+        td.dataset.comentario = texto;
+
+        // Actualizar asistenciasCurso si ya existe
+        const estudianteId = parseInt(td.parentElement.dataset.estudianteId);
+        const colIndex = Array.from(td.parentElement.cells).indexOf(td) - 2;
+        const fechaCol = fechas[colIndex];
+        let existente = asistenciasCurso.find(a => a.EstudianteId === estudianteId && a.Fecha.toDateString() === fechaCol.toDateString());
+        if (existente) existente.Comentario = texto;
+
+        // Crear icono si no existe
+        if (!td.querySelector(".comentario-icono") && texto.length>0) {
+            let icono = document.createElement("span");
+            icono.className = "comentario-icono";
+            icono.textContent = "📝";
+            icono.style.cursor = 'pointer';
+            icono.title = 'Ver comentario';
+            icono.style.fontSize = '12px';
+            icono.style.marginLeft = '4px';
+            icono.addEventListener('click', e => { e.stopPropagation(); alert(`Comentario: ${texto}`); });
+            td.appendChild(icono);
         }
         panel.remove();
         panelComentarioActual = null;
@@ -154,13 +158,15 @@ function crearPanelComentario(td, estudiante, fecha) {
 function bloquearColumna(colIndex) {
     planillaBody.querySelectorAll('tr').forEach(fila => {
         const td = fila.cells[colIndex + 2];
-        td.querySelectorAll('input').forEach(inp => inp.disabled = true);
+        const inputs = td.getElementsByTagName('input');
+        for(let inp of inputs) inp.disabled = true;
     });
 }
 function desbloquearColumna(colIndex) {
     planillaBody.querySelectorAll('tr').forEach(fila => {
         const td = fila.cells[colIndex + 2];
-        td.querySelectorAll('input').forEach(inp => inp.disabled = false);
+        const inputs = td.getElementsByTagName('input');
+        for(let inp of inputs) inp.disabled = false;
     });
 }
 
@@ -171,21 +177,33 @@ async function enviarAsistenciasColumna(colIndex, fecha) {
     const selectEvento = headerRow.cells[colIndex + 2].querySelector('select');
     const eventoId = parseInt(selectEvento.value);
     const asistencias = [];
+
     filas.forEach(fila => {
         const td = fila.cells[colIndex + 2];
         const inputs = td.getElementsByTagName('input');
         const presente = inputs[0].checked;
         const comentario = td.dataset.comentario || '';
-        const estudianteId = fila.dataset.estudianteId;
-        asistencias.push({ 
-            EstudianteId: parseInt(estudianteId), 
-            CursoId: parseInt(cursoId),
-            Fecha: fecha.toISOString(), 
-            EventoId: eventoId, 
-            Presente: presente, 
-            Comentario: comentario 
-        });
+        const estudianteId = parseInt(fila.dataset.estudianteId);
+
+        // Upsert: reemplaza si ya existe
+        let existente = asistenciasCurso.find(a => a.EstudianteId === estudianteId && a.Fecha.toDateString() === fecha.toDateString());
+        if(existente){
+            existente.Presente = presente;
+            existente.Comentario = comentario;
+            existente.EventoId = eventoId;
+            asistencias.push(existente);
+        } else {
+            asistencias.push({ 
+                EstudianteId: estudianteId,
+                CursoId: parseInt(cursoId),
+                Fecha: fecha.toISOString(),
+                EventoId: eventoId,
+                Presente: presente,
+                Comentario: comentario
+            });
+        }
     });
+
     try {
         const res = await fetch('https://localhost:7290/api/asistencias/bulk', {
             method: 'POST',
@@ -195,6 +213,10 @@ async function enviarAsistenciasColumna(colIndex, fecha) {
         const data = await res.json();
         if (data.success) alert('Asistencias guardadas correctamente!');
         else alert('Error: ' + data.errorMessage);
+        if(data.success){
+            await cargarAsistenciasCurso(cursoId);
+            renderizarTabla();
+        }
         return data.success;
     } catch (err) {
         console.error(err);
@@ -211,7 +233,6 @@ function renderizarTabla() {
     fechas.forEach((f, colIndex) => {
         const th = document.createElement('th');
 
-        // Fecha
         const fechaDiv = document.createElement('div');
         fechaDiv.textContent = `${f.toLocaleString('es-AR',{month:'short'}).toUpperCase()} ${f.getDate()}`;
         fechaDiv.style.fontWeight = '600';
@@ -221,11 +242,11 @@ function renderizarTabla() {
         // Select evento
         const select = document.createElement('select');
         select.style.width = '100%';
-        if (!eventos.length) {
+        if(!eventos.length){
             const opt = document.createElement('option'); opt.value=''; opt.textContent='Normal'; select.appendChild(opt);
         } else {
-            eventos.forEach(ev => { const opt = document.createElement('option'); opt.value=ev.id; opt.textContent=ev.descripcion; select.appendChild(opt); });
-            if (idEventoNormal) select.value=idEventoNormal;
+            eventos.forEach(ev=>{const opt=document.createElement('option'); opt.value=ev.id; opt.textContent=ev.descripcion; select.appendChild(opt);});
+            if(idEventoNormal) select.value=idEventoNormal;
         }
         th.appendChild(select);
 
@@ -233,9 +254,8 @@ function renderizarTabla() {
         const btn = document.createElement('button');
         btn.style.marginTop='4px';
 
-        // Ver si hay asistencias existentes en esta fecha
-        const hayAsistencias = asistenciasCurso.some(a => a.Fecha.toDateString() === f.toDateString());
-        if (hayAsistencias) {
+        const hayAsistencias = asistenciasCurso.some(a=>a.Fecha.toDateString() === f.toDateString());
+        if(hayAsistencias){
             btn.textContent='Editar';
             btn.style.backgroundColor='orange';
             btn.style.color='black';
@@ -246,13 +266,12 @@ function renderizarTabla() {
             btn.style.color='white';
         }
 
-        // Cambio de evento
         select.addEventListener('change', ()=>{
-            const evId = parseInt(select.value);
+            const evId=parseInt(select.value);
             planillaBody.querySelectorAll('tr').forEach(fila=>{
                 const td = fila.cells[colIndex+2];
                 const [pChk,aChk] = td.getElementsByTagName('input');
-                if(evId !== idEventoNormal){
+                if(evId!==idEventoNormal){
                     pChk.checked=false; aChk.checked=true; td.style.backgroundColor='#f7b2b2';
                 } else {
                     pChk.checked=false; aChk.checked=false; td.style.backgroundColor='';
@@ -291,17 +310,15 @@ function renderizarTabla() {
             const pChk = document.createElement('input'); pChk.type='checkbox'; pChk.style.marginRight='6px';
             const aChk = document.createElement('input'); aChk.type='checkbox'; aChk.style.marginLeft='6px';
 
-            // Asistencia existente
-            const asistencia = asistenciasCurso.find(a => a.EstudianteId === est.id && a.Fecha.toDateString() === f.toDateString());
+            const asistencia = asistenciasCurso.find(a=>a.EstudianteId===est.id && a.Fecha.toDateString()===f.toDateString());
             if(asistencia){
                 pChk.checked = asistencia.Presente;
                 aChk.checked = !asistencia.Presente;
-                td.style.backgroundColor = asistencia.Presente ? '#b2fab4' : '#f7b2b2';
-                
-                // Comentario
+                td.style.backgroundColor = asistencia.Presente?'#b2fab4':'#f7b2b2';
+
                 if(asistencia.Comentario){
                     td.dataset.comentario = asistencia.Comentario;
-                    const icono = document.createElement('span');
+                    const icono=document.createElement('span');
                     icono.className='comentario-icono';
                     icono.textContent='📝';
                     icono.style.cursor='pointer';
@@ -315,9 +332,8 @@ function renderizarTabla() {
                     td.appendChild(icono);
                 }
 
-                // Bloquear inputs
-                pChk.disabled = true;
-                aChk.disabled = true;
+                pChk.disabled=true;
+                aChk.disabled=true;
             }
 
             pChk.addEventListener('change',()=>{ if(pChk.checked){ aChk.checked=false; td.style.backgroundColor='#b2fab4'; } else td.style.backgroundColor=''; });
@@ -335,7 +351,7 @@ function renderizarTabla() {
 profesorSelect.addEventListener('change',()=>{
     const profId = profesorSelect.value;
     if(profId) cargarCursos(profId);
-    cursoSelect.innerHTML = '<option value="">--Seleccione--</option>';
+    cursoSelect.innerHTML='<option value="">--Seleccione--</option>';
     cursoSelect.disabled=true;
     planillaBody.innerHTML='';
     headerRow.innerHTML='<th>Nombre</th><th>Apellido</th>';
