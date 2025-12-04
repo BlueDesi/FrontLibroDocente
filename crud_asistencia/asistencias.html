@@ -2,43 +2,39 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Planilla de Asistencia por Cuatrimestre</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencias</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Planilla de Asistencia</h1>
 
-    <label for="profesorSelect">Seleccione un Profesor:</label>
-    <select id="profesorSelect">
-        <option value="">--Seleccione--</option>
-    </select>
+<div class="contenedor">
+    <h1>Registro de Asistencia</h1>
 
-    <br>
+    <div class="filtros">
+        <select id="profesorSelect"></select>
+        <select id="cursoSelect" disabled></select>
 
-    <label for="cursoSelect">Seleccione un Curso:</label>
-    <select id="cursoSelect" disabled>
-        <option value="">--Seleccione--</option>
-    </select>
+        <select id="cuatrimestreSelect">
+            <option value="0">1° Cuatrimestre</option>
+            <option value="1">2° Cuatrimestre</option>
+        </select>
+    </div>
 
-    <br>
+    <div class="tabla-wrapper">
+        <table>
+            <thead>
+                <tr id="headerRow">
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                </tr>
+            </thead>
+            <tbody id="planillaBody"></tbody>
+        </table>
+    </div>
+</div>
 
-    <label for="cuatrimestreSelect">Seleccione Cuatrimestre:</label>
-    <select id="cuatrimestreSelect">
-        <option value="0">1er Cuatrimestre</option>
-        <option value="1">2do Cuatrimestre</option>
-    </select>
+<script src="asistencias.js"></script>
 
-    <table id="planilla">
-        <thead>
-            <tr id="headerRow">
-                <th>Nombre</th>
-                <th>Apellido</th>
-            </tr>
-        </thead>
-        <tbody id="planillaBody">
-        </tbody>
-    </table>
-
-    <script src="asistencias.js"></script>
 </body>
 </html>
