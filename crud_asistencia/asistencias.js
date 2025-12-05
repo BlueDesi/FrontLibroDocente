@@ -11,6 +11,7 @@ let eventos = [];
 let idEventoNormal = null;
 let panelComentarioActual = null;
 let asistenciasCurso = [];
+let cursoSeleccionado = null; // <- NUEVO
 
 const cuatrimestres = [
     { nombre: "1er Cuatrimestre", inicio: new Date(2025, 2, 5), fin: new Date(2025, 6, 20) },
@@ -85,7 +86,8 @@ async function cargarAsistenciasCurso(cursoId) {
             Fecha: new Date(a.fecha ?? a.Fecha),
             Presente: a.presente ?? a.Presente,
             Comentario: a.comentario ?? a.Comentario,
-            EventoId: a.eventoId ?? a.EventoId
+            EventoId: a.eventoId ?? a.EventoId,
+            CursoId: cursoSeleccionado ? cursoSeleccionado.id : parseInt(a.cursoId ?? a.CursoId) // <- id seguro
         })) : [];
     } catch (err) {
         console.error(err);
@@ -130,14 +132,12 @@ function crearPanelComentario(td, estudiante, fecha) {
         let texto = panel.querySelector("#comentarioTexto").value.trim();
         td.dataset.comentario = texto;
 
-        // Actualizar asistenciasCurso si ya existe
         const estudianteId = parseInt(td.parentElement.dataset.estudianteId);
         const colIndex = Array.from(td.parentElement.cells).indexOf(td) - 2;
         const fechaCol = fechas[colIndex];
         let existente = asistenciasCurso.find(a => a.EstudianteId === estudianteId && a.Fecha.toDateString() === fechaCol.toDateString());
         if (existente) existente.Comentario = texto;
 
-        // Crear icono si no existe
         if (!td.querySelector(".comentario-icono") && texto.length>0) {
             let icono = document.createElement("span");
             icono.className = "comentario-icono";
@@ -171,13 +171,24 @@ function desbloquearColumna(colIndex) {
 }
 
 // ---------------- ENVIAR ASISTENCIAS ----------------
+// ---------------- ENVIAR/ACTUALIZAR ASISTENCIAS ----------------
 async function enviarAsistenciasColumna(colIndex, fecha) {
     const filas = planillaBody.querySelectorAll('tr');
-    const cursoId = cursoSelect.value;
+
+    // Obtener el curso seleccionado
+    const optCurso = cursoSelect.selectedOptions[0];
+    if (!optCurso || !optCurso.value) {
+        alert('No hay curso seleccionado.');
+        return false;
+    }
+    const cursoId = parseInt(optCurso.value);
+
+    // Obtener el evento de la columna
     const selectEvento = headerRow.cells[colIndex + 2].querySelector('select');
     const eventoId = parseInt(selectEvento.value);
-    const asistencias = [];
 
+    // Construir array de asistencias
+    const asistencias = [];
     filas.forEach(fila => {
         const td = fila.cells[colIndex + 2];
         const inputs = td.getElementsByTagName('input');
@@ -185,45 +196,40 @@ async function enviarAsistenciasColumna(colIndex, fecha) {
         const comentario = td.dataset.comentario || '';
         const estudianteId = parseInt(fila.dataset.estudianteId);
 
-        // Upsert: reemplaza si ya existe
-        let existente = asistenciasCurso.find(a => a.EstudianteId === estudianteId && a.Fecha.toDateString() === fecha.toDateString());
-        if(existente){
-            existente.Presente = presente;
-            existente.Comentario = comentario;
-            existente.EventoId = eventoId;
-            asistencias.push(existente);
-        } else {
-            asistencias.push({ 
-                EstudianteId: estudianteId,
-                CursoId: parseInt(cursoId),
-                Fecha: fecha.toISOString(),
-                EventoId: eventoId,
-                Presente: presente,
-                Comentario: comentario
-            });
-        }
+        asistencias.push({ 
+            EstudianteId: estudianteId,
+            CursoId: cursoId,
+            Fecha: fecha.toISOString(),
+            EventoId: eventoId,
+            Presente: presente,
+            Comentario: comentario
+        });
     });
 
+    // Enviar al endpoint upsert-bulk
     try {
-        const res = await fetch('https://localhost:7290/api/asistencias/bulk', {
+        const res = await fetch('https://localhost:7290/api/asistencias/upsert-bulk', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(asistencias)
         });
         const data = await res.json();
-        if (data.success) alert('Asistencias guardadas correctamente!');
-        else alert('Error: ' + data.errorMessage);
-        if(data.success){
+        if (data.success) {
+            alert('Asistencias guardadas correctamente!');
             await cargarAsistenciasCurso(cursoId);
             renderizarTabla();
+            return true;
+        } else {
+            alert('Error: ' + data.errorMessage);
+            return false;
         }
-        return data.success;
     } catch (err) {
         console.error(err);
         alert('Error de conexión al guardar asistencias');
         return false;
     }
 }
+
 
 // ---------------- RENDERIZAR TABLA ----------------
 function renderizarTabla() {
@@ -239,7 +245,6 @@ function renderizarTabla() {
         fechaDiv.style.marginBottom = '4px';
         th.appendChild(fechaDiv);
 
-        // Select evento
         const select = document.createElement('select');
         select.style.width = '100%';
         if(!eventos.length){
@@ -250,7 +255,6 @@ function renderizarTabla() {
         }
         th.appendChild(select);
 
-        // Botón Finalizar/Editar
         const btn = document.createElement('button');
         btn.style.marginTop='4px';
 
@@ -300,7 +304,6 @@ function renderizarTabla() {
         headerRow.appendChild(th);
     });
 
-    // Filas de estudiantes
     estudiantes.forEach(est=>{
         const tr = document.createElement('tr');
         tr.dataset.estudianteId = est.id;
@@ -358,12 +361,17 @@ profesorSelect.addEventListener('change',()=>{
 });
 
 cursoSelect.addEventListener('change',()=>{
-    const cursoId = cursoSelect.value;
-    if(cursoId){
-        const opt = cursoSelect.selectedOptions[0];
-        diaClaseCurso = parseInt(opt.dataset.diaclase);
-        cargarEstudiantes(cursoId);
-    }
+    const opt = cursoSelect.selectedOptions[0];
+    if(!opt) return;
+
+    cursoSeleccionado = {
+        id: parseInt(opt.value),
+        nombre: opt.textContent,
+        diaClase: parseInt(opt.dataset.diaclase)
+    };
+
+    diaClaseCurso = cursoSeleccionado.diaClase;
+    cargarEstudiantes(cursoSeleccionado.id);
 });
 
 cuatrimestreSelect.addEventListener('change',()=>{
